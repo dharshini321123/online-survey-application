@@ -2,6 +2,9 @@
 import { useState } from "react";
 import "./App.css";
 
+// Replace this with your actual Render Backend URL
+const API_URL = "https://online-survey-application-vfl6.onrender.com";
+
 const questionBank = [
   {
     question: "How satisfied are you with our website?",
@@ -69,7 +72,7 @@ function App() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/surveys",
+        `${API_URL}/api/surveys`,
         {
           method: "POST",
           headers: {
@@ -90,14 +93,21 @@ function App() {
         throw new Error(data.message || "Submission failed.");
       }
 
-      setMessage("Survey submitted successfully! Answers saved to MongoDB.");
+      setMessage(
+        "Survey submitted successfully! Answers saved to MongoDB."
+      );
+
       setAnswers({});
       setQuestions(getRandomQuestions());
+
     } catch (error) {
+      console.error("Survey submission error:", error);
+
       setMessage(
         "Error: " + error.message +
         " Please check the backend and MongoDB."
       );
+
     } finally {
       setLoading(false);
     }
@@ -106,6 +116,7 @@ function App() {
   return (
     <main className="container">
       <h1>Online Survey Application</h1>
+
       <p className="subtitle">
         Please answer these 5 questions and submit your response.
       </p>
@@ -128,6 +139,7 @@ function App() {
                     handleAnswer(item.question, option)
                   }
                 />
+
                 {option}
               </label>
             ))}
@@ -139,7 +151,9 @@ function App() {
         </button>
 
         {message && (
-          <p className="message" role="status">{message}</p>
+          <p className="message" role="status">
+            {message}
+          </p>
         )}
       </form>
     </main>
